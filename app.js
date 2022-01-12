@@ -1,8 +1,10 @@
+const path = require('path');
 const express = require('express')
 const dotenv= require('dotenv')
+const passport = require('passport')
 const {connection}= require("./config/db")
 const morgan = require('morgan')
-const {engine} = require('express-handlebars')
+const exphbs = require('express-handlebars')
 //load config
 connection()
 dotenv.config({path:'./.env'})
@@ -14,8 +16,11 @@ if(process.env.MODE==='dev'){
 
 //Handlebars Middleware
 //app.engine('.hbs', exphbs({ defaultLayout: 'main', extname:'.hbs'}))
-app.engine('handlebars', engine({ extname: '.hbs', defaultLayout: "main"}));
+app.engine('.hbs', exphbs.engine({defaultLayout: "main",  extname: '.hbs'}));
 app.set('view engine','.hbs')
+
+//Static folder
+app.use(express.static(path.join(__dirname,'public')))
 
 //Routers
 app.use('/',require('./routes/index'))
